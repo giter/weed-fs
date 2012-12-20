@@ -1,11 +1,11 @@
 package storage
 
 import (
+	"log"
 	"os"
 	"path"
 	"strconv"
 	"sync"
-	"log"
 )
 
 const (
@@ -22,33 +22,45 @@ type Volume struct {
 }
 
 func NewVolume(dirname string, id uint32) (v *Volume) {
+
 	var e os.Error
+	
 	v = &Volume{dir: dirname, Id: id}
 	fileName := strconv.Uitoa64(uint64(v.Id))
 	v.dataFile, e = os.OpenFile(path.Join(v.dir, fileName+".dat"), os.O_RDWR|os.O_CREATE, 0644)
+	
 	if e != nil {
 		log.Fatalf("New Volume [ERROR] %s\n", e)
 	}
+	
 	v.maybeWriteSuperBlock()
+	
 	indexFile, ie := os.OpenFile(path.Join(v.dir, fileName+".idx"), os.O_RDWR|os.O_CREATE, 0644)
+	
 	if ie != nil {
 		log.Fatalf("Write Volume Index [ERROR] %s\n", ie)
 	}
+	
 	v.nm = LoadNeedleMap(indexFile)
 
 	return
 }
 func (v *Volume) Size() int64 {
+
 	stat, e := v.dataFile.Stat()
+	
 	if e == nil {
 		return stat.Size
 	}
+	
 	return -1
 }
+
 func (v *Volume) Close() {
 	v.nm.Close()
 	v.dataFile.Close()
 }
+
 func (v *Volume) maybeWriteSuperBlock() {
 	stat, _ := v.dataFile.Stat()
 	if stat.Size == 0 {
