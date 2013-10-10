@@ -4,6 +4,7 @@ import (
 	"libs/storage"
 	"libs/directory"
 	"flag"
+	"time"
 	"fmt"
 	"net/http"
 	"encoding/json"
@@ -87,7 +88,15 @@ func main() {
 	http.HandleFunc("/dir/status", dirStatusHandler)
 
 	log.Println("Start directory service at http://127.0.0.1:" + strconv.Itoa(*port))
-	e := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
+	
+	srv := &http.Server{
+                Addr:":"+strconv.Itoa(*port),
+                Handler: http.DefaultServeMux,
+                ReadTimeout: 30*time.Second,
+        }
+
+  	e := srv.ListenAndServe()
+	
 	if e != nil {
 		log.Fatalf("Fail to start:", e.Error())
 	}

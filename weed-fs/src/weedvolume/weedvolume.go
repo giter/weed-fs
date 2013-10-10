@@ -189,7 +189,14 @@ func main() {
 	log.Println("store joined at", *metaServer)
 
 	log.Println("Start storage service at http://127.0.0.1:"+strconv.Itoa(*port), "public url", *publicUrl)
-	e := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
+	
+	srv := &http.Server{
+                Addr:":"+strconv.Itoa(*port),
+                Handler: http.DefaultServeMux,
+                ReadTimeout: 30*time.Second,
+        }
+
+  	e := srv.ListenAndServe()
 
 	if e != nil {
 		log.Fatalf("Fail to start:", e.Error())
