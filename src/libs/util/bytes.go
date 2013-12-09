@@ -7,7 +7,7 @@ func BytesToUint64(b []byte)(v uint64){
     v <<= 8
   }
   v+=uint64(b[length-1])
-	return
+  return
 }
 
 func BytesToUint32(b []byte)(v uint32){
@@ -17,7 +17,7 @@ func BytesToUint32(b []byte)(v uint32){
     v <<= 8
   }
   v+=uint32(b[length-1])
-	return
+  return
 }
 
 func Uint64toBytes(b []byte, v uint64){
