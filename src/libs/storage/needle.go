@@ -26,7 +26,7 @@ func NewNeedle(r *http.Request) (n *Needle) {
   form, fe := r.MultipartReader()
 
   if fe != nil {
-  	log.Fatalf("MultipartReader [ERROR] %s\n", fe)
+    log.Fatalf("MultipartReader [ERROR] %s\n", fe)
   }
 
   part, _ := form.NextPart()
@@ -37,7 +37,7 @@ func NewNeedle(r *http.Request) (n *Needle) {
   dotSep := strings.LastIndex(r.URL.Path, ".")
   fid := r.URL.Path[commaSep+1:]
   if dotSep > 0 {
-  	fid = r.URL.Path[commaSep+1:dotSep]
+    fid = r.URL.Path[commaSep+1:dotSep]
   }
 
   n.ParsePath(fid)
@@ -48,8 +48,8 @@ func NewNeedle(r *http.Request) (n *Needle) {
 func (n *Needle) ParsePath(fid string) {
   length := len(fid)
   if length <= 8 {
-  	log.Println("Invalid fid", fid, "length", length)
-  	return
+    log.Println("Invalid fid", fid, "length", length)
+    return
   }
   n.Key, n.Cookie = ParseKeyHash(fid)
 }

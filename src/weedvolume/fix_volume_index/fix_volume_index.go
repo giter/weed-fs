@@ -21,19 +21,19 @@ func main() {
   flag.Parse()
 
   if *volumeId == -1 {
-  	flag.Usage()
-  	return
+    flag.Usage()
+    return
   }
 
   fileName := strconv.Itoa(*volumeId)
   dataFile, e := os.OpenFile(path.Join(*dir, fileName+".dat"), os.O_RDONLY, 0644)
   if e != nil {
-  	log.Fatalf("Read Volume [ERROR] %s\n", e)
+    log.Fatalf("Read Volume [ERROR] %s\n", e)
   }
   defer dataFile.Close()
   indexFile, ie := os.OpenFile(path.Join(*dir, fileName+".idx"), os.O_WRONLY|os.O_CREATE, 0644)
   if ie != nil {
-  	log.Fatalf("Create Volume Index [ERROR] %s\n", ie)
+    log.Fatalf("Create Volume Index [ERROR] %s\n", ie)
   }
   defer indexFile.Close()
 
@@ -44,16 +44,16 @@ func main() {
   nm := storage.NewNeedleMap(indexFile)
   offset := uint32(storage.SuperBlockSize)
   for n != nil {
-  	if *IsDebug {
-  		log.Println("key", n.Key, "volume offset", offset, "data_size", n.Size, "length", length)
-  	}
-  	if n.Size > 0 {
-  		count, pe := nm.Put(n.Key, offset/8, n.Size)
-  		if *IsDebug {
-  			log.Println("saved", count, "with error", pe)
-  		}
-  	}
-  	offset += length
-  	n, length = storage.ReadNeedle(dataFile)
+    if *IsDebug {
+      log.Println("key", n.Key, "volume offset", offset, "data_size", n.Size, "length", length)
+    }
+    if n.Size > 0 {
+      count, pe := nm.Put(n.Key, offset/8, n.Size)
+      if *IsDebug {
+        log.Println("saved", count, "with error", pe)
+      }
+    }
+    offset += length
+    n, length = storage.ReadNeedle(dataFile)
   }
 }

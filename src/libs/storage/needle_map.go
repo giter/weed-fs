@@ -19,9 +19,9 @@ type NeedleMap struct {
 
 func NewNeedleMap(file *os.File) *NeedleMap {
   nm := &NeedleMap{
-  	m:         make(map[uint64]*NeedleValue),
-  	bytes:     make([]byte, 16),
-  	indexFile: file,
+    m:         make(map[uint64]*NeedleValue),
+    bytes:     make([]byte, 16),
+    indexFile: file,
   }
   return nm
 }
@@ -35,17 +35,17 @@ func LoadNeedleMap(file *os.File) *NeedleMap {
   bytes := make([]byte, 16*RowsToRead)
   count, e := nm.indexFile.Read(bytes)
   if count > 0 {
-  	fstat, _ := file.Stat()
-  	log.Println("Loading index file", fstat.Name() , "size", fstat.Size() )
+    fstat, _ := file.Stat()
+    log.Println("Loading index file", fstat.Name() , "size", fstat.Size() )
   }
   for count > 0 && e == nil {
-  	for i := 0; i < count; i += 16 {
-  		key := BytesToUint64(bytes[i : i+8])
-  		offset := BytesToUint32(bytes[i+8 : i+12])
-  		size := BytesToUint32(bytes[i+12 : i+16])
-  		nm.m[key] = &NeedleValue{Offset: offset, Size: size}
-  	}
-  	count, e = nm.indexFile.Read(bytes)
+    for i := 0; i < count; i += 16 {
+      key := BytesToUint64(bytes[i : i+8])
+      offset := BytesToUint32(bytes[i+8 : i+12])
+      size := BytesToUint32(bytes[i+12 : i+16])
+      nm.m[key] = &NeedleValue{Offset: offset, Size: size}
+    }
+    count, e = nm.indexFile.Read(bytes)
   }
   return nm
 }

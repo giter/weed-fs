@@ -26,24 +26,24 @@ func dirLookupHandler(w http.ResponseWriter, r *http.Request) {
   vid := r.FormValue("volumeId")
   commaSep := strings.Index(vid, ",")
   if commaSep > 0 {
-  	vid = vid[0:commaSep]
+    vid = vid[0:commaSep]
   }
   volumeId, _ := strconv.ParseUint(vid,10,64)
   machine, e := mapper.Get(uint32(volumeId))
   if e == nil {
-  	writeJson(w, r, machine.Server)
+    writeJson(w, r, machine.Server)
   } else {
-  	log.Println("Invalid volume id", volumeId)
-  	writeJson(w, r, map[string]string{"error": "volume id " + strconv.FormatUint(volumeId,10) + " not found"})
+    log.Println("Invalid volume id", volumeId)
+    writeJson(w, r, map[string]string{"error": "volume id " + strconv.FormatUint(volumeId,10) + " not found"})
   }
 }
 
 func dirAssignHandler(w http.ResponseWriter, r *http.Request) {
   fid, machine, err := mapper.PickForWrite()
   if err != nil {
-  	log.Println(err)
-  	writeJson(w, r, map[string]string{"error": err.Error()})
-  	return 
+    log.Println(err)
+    writeJson(w, r, map[string]string{"error": err.Error()})
+    return 
   }
   writeJson(w, r, map[string]string{"fid": fid, "url": machine.Url})
 }
@@ -56,7 +56,7 @@ func dirJoinHandler(w http.ResponseWriter, r *http.Request) {
   json.Unmarshal([]byte(r.FormValue("volumes")), volumes)
 
   if *IsDebug {
-  	log.Println(s, "volumes", r.FormValue("volumes"))
+    log.Println(s, "volumes", r.FormValue("volumes"))
   }
 
   mapper.Add(*directory.NewMachine(s, publicUrl, *volumes))
@@ -69,12 +69,12 @@ func writeJson(w http.ResponseWriter, r *http.Request, obj interface{}) {
   bytes, _ := json.Marshal(obj)
   callback := r.FormValue("callback")
   if callback == "" {
-  	w.Write(bytes)
+    w.Write(bytes)
   } else {
-  	w.Write([]uint8(callback))
-  	w.Write([]uint8("("))
-  	fmt.Fprint(w, string(bytes))
-  	w.Write([]uint8(")"))
+    w.Write([]uint8(callback))
+    w.Write([]uint8("("))
+    fmt.Fprint(w, string(bytes))
+    w.Write([]uint8(")"))
   }
 }
 
@@ -95,10 +95,10 @@ func main() {
                 ReadTimeout: 30*time.Second,
         }
 
-  	e := srv.ListenAndServe()
+    e := srv.ListenAndServe()
   
   if e != nil {
-  	log.Fatalf("Fail to start:", e.Error())
+    log.Fatalf("Fail to start:", e.Error())
   }
 
 }

@@ -40,11 +40,11 @@ func storeHandler(w http.ResponseWriter, r *http.Request) {
 
   switch r.Method {
   case "GET":
-  	GetHandler(w, r)
+    GetHandler(w, r)
   case "DELETE":
-  	DeleteHandler(w, r)
+    DeleteHandler(w, r)
   case "POST":
-  	PostHandler(w, r)
+    PostHandler(w, r)
   }
 }
 
@@ -57,23 +57,23 @@ func GetHandler(w http.ResponseWriter, r *http.Request) {
   n.ParsePath(fid)
 
   if *IsDebug {
-  	log.Println("volume", volumeId, "reading", n)
+    log.Println("volume", volumeId, "reading", n)
   }
 
   cookie := n.Cookie
   count, e := store.Read(volumeId, n)
 
   if *IsDebug {
-  	log.Println("read bytes", count, "error", e)
+    log.Println("read bytes", count, "error", e)
   }
 
   if n.Cookie != cookie {
-  	log.Println("request with unmaching cookie from ", r.RemoteAddr, "agent", r.UserAgent())
-  	return
+    log.Println("request with unmaching cookie from ", r.RemoteAddr, "agent", r.UserAgent())
+    return
   }
 
   if ext != "" {
-  	w.Header().Set("Content-Type", mime.TypeByExtension(ext))
+    w.Header().Set("Content-Type", mime.TypeByExtension(ext))
   }
 
   w.Write(n.Data)
@@ -85,12 +85,12 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
   volumeId, e := strconv.ParseUint(vid,10,64)
 
   if e != nil {
-  	writeJson(w, r, e)
+    writeJson(w, r, e)
   } else {
-  	ret := store.Write(volumeId, storage.NewNeedle(r))
-  	m := make(map[string]uint32)
-  	m["size"] = ret
-  	writeJson(w, r, m)
+    ret := store.Write(volumeId, storage.NewNeedle(r))
+    m := make(map[string]uint32)
+    m["size"] = ret
+    writeJson(w, r, m)
   }
 }
 
@@ -102,22 +102,22 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
   n.ParsePath(fid)
 
   if *IsDebug {
-  	log.Println("deleting", n)
+    log.Println("deleting", n)
   }
 
   cookie := n.Cookie
   count, ok := store.Read(volumeId, n)
 
   if ok!=nil {
-  	m := make(map[string]uint32)
-  	m["size"] = 0
-  	writeJson(w, r, m)
-  	return
+    m := make(map[string]uint32)
+    m["size"] = 0
+    writeJson(w, r, m)
+    return
   }
 
   if n.Cookie != cookie {
-  	log.Println("delete with unmaching cookie from ", r.RemoteAddr, "agent", r.UserAgent())
-  	return
+    log.Println("delete with unmaching cookie from ", r.RemoteAddr, "agent", r.UserAgent())
+    return
   }
 
   n.Size = 0
@@ -134,12 +134,12 @@ func writeJson(w http.ResponseWriter, r *http.Request, obj interface{}) {
   callback := r.FormValue("callback")
 
   if callback == "" {
-  	w.Write(bytes)
+    w.Write(bytes)
   } else {
-  	w.Write([]uint8(callback))
-  	w.Write([]uint8("("))
-  	fmt.Fprint(w, string(bytes))
-  	w.Write([]uint8(")"))
+    w.Write([]uint8(callback))
+    w.Write([]uint8("("))
+    fmt.Fprint(w, string(bytes))
+    w.Write([]uint8(")"))
   }
 }
 
@@ -149,8 +149,8 @@ func parseURLPath(path string) (vid, fid, ext string) {
   commaIndex := strings.LastIndex(path[sepIndex:], ",")
 
   if commaIndex <= 0 {
-  	log.Println("unknown file id", path[sepIndex+1:])
-  	return
+    log.Println("unknown file id", path[sepIndex+1:])
+    return
   }
 
   dotIndex := strings.LastIndex(path[sepIndex:], ".")
@@ -159,8 +159,8 @@ func parseURLPath(path string) (vid, fid, ext string) {
   ext = ""
 
   if dotIndex > 0 {
-  	fid = path[commaIndex+1 : dotIndex]
-  	ext = path[dotIndex+1:]
+    fid = path[commaIndex+1 : dotIndex]
+    ext = path[dotIndex+1:]
   }
 
   return 
@@ -178,12 +178,12 @@ func main() {
   http.HandleFunc("/add_volume", addVolumeHandler)
 
   go func() {
-  	for {
-  		store.Join(*metaServer)
-  		ns := int64(*pulse) * 1e9
-  		sl := time.Duration(ns + rand.Int63()%ns)
-  		time.Sleep(sl)
-  	}
+    for {
+      store.Join(*metaServer)
+      ns := int64(*pulse) * 1e9
+      sl := time.Duration(ns + rand.Int63()%ns)
+      time.Sleep(sl)
+    }
   }()
 
   log.Println("store joined at", *metaServer)
@@ -196,10 +196,10 @@ func main() {
                 ReadTimeout: 30*time.Second,
         }
 
-  	e := srv.ListenAndServe()
+    e := srv.ListenAndServe()
 
   if e != nil {
-  	log.Fatalf("Fail to start:", e.Error())
+    log.Fatalf("Fail to start:", e.Error())
   }
 
 }

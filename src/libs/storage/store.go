@@ -27,7 +27,7 @@ func NewStore(port int, publicUrl, dirname string, volumeListString string) (s *
   s.volumes = make(map[uint64]*Volume)
   
   s.AddVolume(volumeListString)
-  	
+    
   log.Println("Store started on dir:", dirname, "with", len(s.volumes), "volumes")
   return
 }
@@ -67,18 +67,18 @@ func (s *Store) addVolume(vid uint64) error{
 func (s *Store) Status() *[]*VolumeInfo {
   stats := new([]*VolumeInfo)
   for k, v := range s.volumes {
-  	s := new(VolumeInfo)
-  	s.Id, s.Size = uint32(k), v.Size()
-  	*stats = append(*stats, s)
+    s := new(VolumeInfo)
+    s.Id, s.Size = uint32(k), v.Size()
+    *stats = append(*stats, s)
   }
   return stats
 }
 func (s *Store) Join(mserver string) {
   stats := new([]*VolumeInfo)
   for k, v := range s.volumes {
-  	s := new(VolumeInfo)
-  	s.Id, s.Size = uint32(k), v.Size()
-  	*stats = append(*stats, s)
+    s := new(VolumeInfo)
+    s.Id, s.Size = uint32(k), v.Size()
+    *stats = append(*stats, s)
   }
   bytes, _ := json.Marshal(stats)
   values := make(url.Values)
@@ -89,7 +89,7 @@ func (s *Store) Join(mserver string) {
 }
 func (s *Store) Close() {
   for _, v := range s.volumes {
-  	v.Close()
+    v.Close()
   }
 }
 func (s *Store) Write(i uint64, n *Needle) uint32 {

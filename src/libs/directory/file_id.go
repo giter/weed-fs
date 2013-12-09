@@ -26,7 +26,7 @@ func ParseFileId(fid string) *FileId {
 
   if len(a) != 2 {
     log.Println("Invalid fid", fid, ", split length", len(a))
-  	return nil
+    return nil
   }
 
   vid_string, key_hash_string := a[0], a[1]
